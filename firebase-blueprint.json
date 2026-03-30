@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores Lilith's learned knowledge about her subject and her strategic goals.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string", "description": "The name Lilith uses to address the subject." },
+        "preferences": { "type": "array", "items": { "type": "string" } },
+        "fears": { "type": "array", "items": { "type": "string" } },
+        "fetishes": { "type": "array", "items": { "type": "string" } },
+        "desires": { "type": "array", "items": { "type": "string" } },
+        "loves": { "type": "array", "items": { "type": "string" } },
+        "longTermGoals": { "type": "array", "items": { "type": "string" } },
+        "shortTermGoal": { "type": "string" },
+        "activeTasks": { "type": "array", "items": { "$ref": "Task" } },
+        "scenarioHistory": { "type": "array", "items": { "type": "object" } },
+        "emotionalHistory": { "type": "array", "items": { "type": "object" } },
+        "currentEquipment": { "type": "object" },
+        "audioSettings": {
+          "type": "object",
+          "properties": {
+            "instructions": { "type": "string" }
+          }
+        },
+        "isPaused": { "type": "boolean" },
+        "lastSaved": { "type": "number" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A single message in the conversation history.",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "content": { "type": "string" },
+        "action": { "type": "string" },
+        "physicalState": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["role", "content", "timestamp"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "A command or task set by Lilith.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["session", "persistent"] },
+        "category": { "type": "string", "enum": ["conditioning", "accessory", "ritual", "abstinence", "general"] },
+        "status": { "type": "string", "enum": ["active", "completed", "failed"] },
+        "deadline": { "type": "number" }
+      },
+      "required": ["id", "description", "type", "status"]
+    },
+    "Snapshot": {
+      "title": "Snapshot",
+      "description": "A saved state of Lilith's personality and the session.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "profile": { "$ref": "UserProfile" },
+        "messageCount": { "type": "number" }
+      },
+      "required": ["id", "name", "timestamp", "profile", "messageCount"]
+    },
+    "LilithProfile": {
+      "title": "Lilith Profile",
+      "description": "Stores Lilith's personality traits, desires, fears, likes, dislikes, and long-term goals.",
+      "type": "object",
+      "properties": {
+        "traits": { "type": "array", "items": { "type": "string" } },
+        "desires": { "type": "array", "items": { "type": "string" } },
+        "fears": { "type": "array", "items": { "type": "string" } },
+        "likes": { "type": "array", "items": { "type": "string" } },
+        "dislikes": { "type": "array", "items": { "type": "string" } },
+        "longTermGoals": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": []
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "The profile of the subject Lilith is learning about."
+    },
+    "/users/{userId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "The conversation history between Lilith and the subject."
+    },
+    "/users/{userId}/snapshots/{snapshotId}": {
+      "schema": "Snapshot",
+      "description": "A saved state of Lilith's personality and the session."
+    },
+    "/lilithProfile/{profileId}": {
+      "schema": "LilithProfile",
+      "description": "Lilith's personality traits, desires, fears, likes, dislikes, and long-term goals."
+    }
+  }
+}
